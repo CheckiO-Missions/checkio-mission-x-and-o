@@ -1,44 +1,60 @@
 <p>
-    <i>( Describe task in general )</i>
+    Tic-Tac-Toe, sometimes also known as Xs and Os, is a game for two players
+    (X and O) who take turns marking the spaces in a 3×3 grid.
+    The player who succeeds in placing three respective marks in a horizontal, vertical, or diagonal
+    rows (NW-SE and
+    NE-SW) wins the game. Maybe you've solve <a
+        href="http://www.checkio.org/mission/x-o-referee/share/46411288d0dd63d1c24b3d004cb7e6ea/">
+    "Xs and Os Referee"</a> already and this mission will be simpler for you.
+
 </p>
 
 <p>
-    Sum two passed ints
+    Here you will play versus various bots and your mission is don't lose. Only wins or draws.
+    For each game your function is called several times (in the same environment)
+    for each move until game over.
 </p>
-
-<p style="text-align: center;">
-    <img class="for_info_only" title="example" src="{{MEDIA}}example.png" alt="example" width="392px"/>
-    <img class="for_editor_only" title="example" src="{{MEDIA}}example.png" alt="example" width="380px"/>
-</p>
-
-<p><i>( Explain input and output values )</i></p>
 <p>
-    <strong>Input: </strong> Two arguments. Both are int
+    For each step your function receive a grid state as a sequence of strings, where
+    "X" is X-mark, "O" is O-mark and "." is an empty cell. The second argument is a your mark - "X"
+    or "O". For each move your fuтction should return coordinates of the your next mark as
+    a sequence of two numbers - row and column. Rows and columns arecounted from zero.
+</p>
+
+<!--<p style="text-align: center;">-->
+<!--<img class="for_info_only" title="x-o-referee" src="{{MEDIA}}x-o-referee.png" alt="x-o-referee"-->
+<!--width="600px"/>-->
+<!--<img class="for_editor_only" title="x-o-referee" src="{{MEDIA}}x-o-referee.png"-->
+<!--alt="x-o-referee" width="380px"/>-->
+<!--</p>-->
+
+<p>
+    <strong>Input: </strong> Two arguments. A grid state as a tuple of strings (unicode) and
+    your mark as a string "X" or "O" (unicode).
 </p>
 
 <p>
-    <strong>Output: </strong> Int. 
+    <strong>Output: </strong> The coordinates of your move as a list or a tuple of two integers from
+    0 to 2.
 </p>
-
 
 
 <div class="for_info_only">
-    <p><i>( Put some usage examples )</i></p>
     <p>
         <strong>Example:</strong>
     </p>
-    <pre class="brush: python">
-checkio(3, 2) == 5
-checkio(5, 7) == 12
-    </pre>
+<textarea data-code="python">x_and_o((
+    "X.O",
+    "XX.",
+    "XOO"), "O") # (1, 2) and you will win</textarea>
 </div>
-
 <p class="for_info_only">
     <strong>How it is used: </strong>
-    <i>(Here you can explain how it can be used in development and what is usage of this.)</i>
+
 </p>
 
-<p>
-    <strong>Precondition:</strong>
-    <i>Constraints for Input</i>
+
+<p><strong>Precondition:</strong><br>
+    len(grid) == 3<br>
+    all(all(ch in "XO." for ch in row) and len(row) == 3 for row in grid)
 </p>
