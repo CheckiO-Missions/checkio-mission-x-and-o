@@ -50,8 +50,8 @@ cover = """def cover(f, data):
 
 
 def random_bot(grid, mark):
-    empties = ((x, y) for x in range(SIZE) for y in range(SIZE) if grid[x][y] == E)
-    return choice(empties)
+    empties = [(x, y) for x in range(SIZE) for y in range(SIZE) if grid[x][y] == E]
+    return choice(empties) if empties else (None, None)
 
 
 ALGORITHMS = {
@@ -60,37 +60,45 @@ ALGORITHMS = {
 
 
 def check_game(field):
-    if not any(E in row for row in field):
-        return D
-    lines = (field + ["".join(row) for row in zip(*field)] +
+    lines = (["".join(row) for row in field] + ["".join(row) for row in zip(*field)] +
              [''.join(row) for row in zip(*[(r[i], r[2 - i]) for i, r in enumerate(field)])])
-    return X if (X * SIZE in lines) else O if (O * SIZE in lines) else E
+    if X * SIZE in lines:
+        return X
+    elif O * SIZE in lines:
+        return O
+    elif not any(E in row for row in field):
+        return D
+    else:
+        return E
 
 
 def initial(data):
     player_mark = data["player_mark"]
     bot_mark = X if player_mark == O else O
-    if data["player_mark"] == FIRST:
-        start_field = ALGORITHMS[data["bot"]](EMPTY_FIELD, bot_mark)
-    else:
-        start_field = EMPTY_FIELD
+    start_field = [list(row) for row in EMPTY_FIELD]
+    if data["player_mark"] != FIRST:
+        x, y = ALGORITHMS[data["bot"]](EMPTY_FIELD, bot_mark)
+        start_field[x][y] = bot_mark
     return {
-        "input": [start_field, player_mark],
+        "input": [["".join(row) for row in start_field], player_mark],
         "player_mark": player_mark,
-        "bot_mark": bot_mark
+        "bot_mark": bot_mark,
+        "bot": data["bot"]
     }
 
 
 def process(data, user):
     if (not isinstance(user, (tuple, list)) or len(user) != 2 or
-            not all(isinstance(u, int) and 0 <= u[0] < 3 and 0 <= u[1] < 3 for u in user)):
+            not all(isinstance(u, int) and 0 <= u < 3 for u in user)):
         data.update({"result_addon": "The result must be a list/tuple of two integers from 0 to 2.",
-                     "result": False})
+                     "result": False,
+                     "bot_move": None})
         return data
-    grid = list(data["input"][0])
+    grid = list(list(row) for row in data["input"][0])
     if grid[user[0]][user[1]] != E:
         data.update({"result_addon": "You tried to mark the filled cell.",
-                     "result": False})
+                     "result": False,
+                     "bot_move": None})
         return data
     player_mark = data["player_mark"]
     bot_mark = data["bot_mark"]
@@ -99,26 +107,31 @@ def process(data, user):
     if game_result == D or game_result == player_mark:
         data.update({"result_addon": "Game ended.",
                      "game_result": game_result,
-                     "result": True})
+                     "result": True,
+                     "bot_move": None})
         return data
     bot_move = ALGORITHMS[data["bot"]](grid, bot_mark)
     grid[bot_move[0]][bot_move[1]] = bot_mark
     game_result = check_game(grid)
     if game_result == bot_mark:
-        data.update({"result_addon": "You lost.",
+        data.update({"result_addon": "Lost :-(",
                      "game_result": game_result,
-                     "result": False})
+                     "result": False,
+                     "bot_move": bot_move})
         return data
     elif game_result == D:
         data.update({"result_addon": "Game ended.",
                      "game_result": game_result,
-                     "result": True})
+                     "result": True,
+                     "bot_move": bot_move})
         return data
     data.update({"result_addon": "Next move.",
-                 "input": [grid, player_mark],
+                 "input": [["".join(row) for row in grid], player_mark],
                  "game_result": game_result,
-                 "result": True})
+                 "result": True,
+                 "bot_move": bot_move})
     return data
+
 
 def is_win(data):
     return data["game_result"] == data["player_mark"] or data["game_result"] == D
@@ -135,6 +148,7 @@ api.add_listener(
         initial_referee=initial,
         process_referee=process,
         is_win_referee=is_win,
+        function_name="x_and_o"
         # checker=None,  # checkers.float.comparison(2)
         # add_allowed_modules=[],
         # add_close_builtins=[],

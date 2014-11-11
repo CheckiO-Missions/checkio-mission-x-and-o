@@ -40,10 +40,14 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
             }
 
             //YOUR FUNCTION NAME
-            var fname = 'checkio';
+            var fname = 'x_and_o';
 
-            var checkioInput = data.in;
-            var checkioInputStr = fname + '(' + JSON.stringify(checkioInput) + ')';
+            var checkioInput = data.in || [
+                ["...", "...", "..."],
+                "X"
+            ];
+            var checkioInputStr = fname + '(' + JSON.stringify(checkioInput[0]).replace("[", "(").replace("]", ")") +
+                ", " + JSON.stringify(checkioInput[1]) + ')';
 
             var failError = function (dError) {
                 $content.find('.call').html(checkioInputStr);
@@ -69,28 +73,46 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
             $content.find('.call').html(checkioInputStr);
             $content.find('.output').html('Working...');
 
+            var svg = new SVG($content.find(".explanation")[0]);
+            svg.draw(checkioInput[0]);
 
             if (data.ext) {
-                var rightResult = data.ext["answer"];
                 var userResult = data.out;
                 var result = data.ext["result"];
                 var result_addon = data.ext["result_addon"];
+                var game_result = data.ext["game_result"];
+                var bot_move = data.ext["bot_move"];
+
+                var botMark = checkioInput[1] === "X" ? "O" : "X";
+
+                svg.addMove(userResult, checkioInput[1]);
+                if (bot_move) {
+                    svg.addMove(bot_move, botMark);
+                }
 
                 //if you need additional info from tests (if exists)
                 var explanation = data.ext["explanation"];
                 $content.find('.output').html('&nbsp;Your result:&nbsp;' + JSON.stringify(userResult));
                 if (!result) {
-                    $content.find('.answer').html('Right result:&nbsp;' + JSON.stringify(rightResult));
+                    $content.find('.answer').html(result_addon);
                     $content.find('.answer').addClass('error');
                     $content.find('.output').addClass('error');
                     $content.find('.call').addClass('error');
                 }
+                else if (game_result) {
+                    if (game_result == "D") {
+                        $content.find('.answer').html("Draw :-|");
+                    }
+                    else if (game_result == checkioInput[1]) {
+                        $content.find('.answer').html("Win :-)");
+                    }
+                    else {
+                        $content.find('.answer').remove();
+                    }
+                }
                 else {
                     $content.find('.answer').remove();
                 }
-            }
-            else {
-                $content.find('.answer').remove();
             }
 
 
@@ -121,26 +143,103 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
 //            });
 //        });
 
-        var colorOrange4 = "#F0801A";
-        var colorOrange3 = "#FA8F00";
-        var colorOrange2 = "#FAA600";
-        var colorOrange1 = "#FABA00";
+        function SVG(dom) {
+            var colorOrange4 = "#F0801A";
+            var colorOrange3 = "#FA8F00";
+            var colorOrange2 = "#FAA600";
+            var colorOrange1 = "#FABA00";
 
-        var colorBlue4 = "#294270";
-        var colorBlue3 = "#006CA9";
-        var colorBlue2 = "#65A1CF";
-        var colorBlue1 = "#8FC7ED";
+            var colorBlue4 = "#294270";
+            var colorBlue3 = "#006CA9";
+            var colorBlue2 = "#65A1CF";
+            var colorBlue1 = "#8FC7ED";
 
-        var colorGrey4 = "#737370";
-        var colorGrey3 = "#9D9E9E";
-        var colorGrey2 = "#C5C6C6";
-        var colorGrey1 = "#EBEDED";
+            var colorGrey4 = "#737370";
+            var colorGrey3 = "#9D9E9E";
+            var colorGrey2 = "#C5C6C6";
+            var colorGrey1 = "#EBEDED";
 
-        var colorWhite = "#FFFFFF";
-        //Your Additional functions or objects inside scope
-        //
-        //
-        //
+            var colorWhite = "#FFFFFF";
+
+            var pad = 10;
+
+            var cell = 80;
+            var size = cell * 3 + 2 * pad;
+
+            var paper = Raphael(dom, size, size);
+
+            var aLine = {"stroke": colorBlue4, "stroke-width": 4, "stroke-linecap": "round"};
+            var aX = {"stroke": colorBlue3, "stroke-width": 4, "stroke-linecap": "round"};
+            var aXb = {"stroke": colorBlue4, "stroke-width": 6, "stroke-linecap": "round"};
+            var aO = {"stroke": colorOrange3, "stroke-width": 4};
+            var aOb = {"stroke": colorOrange4, "stroke-width": 6};
+
+            var field = [];
+
+            function xPath(p, x, y) {
+                var len = cell * 3 / 8;
+                return p.path([
+                    ["M", x - len, y - len],
+                    ["L", x + len, y + len],
+                    ["M", x - len, y + len],
+                    ["L", x + len, y - len]
+                ]);
+            }
+
+            function oPath(p, x, y) {
+                return p.circle(x, y, cell * 3 / 8);
+            }
+
+
+            this.draw = function (grid) {
+                for (var i = 0; i < 2; i++) {
+                    paper.path([
+                        ["M", pad, pad + cell * (i + 1)],
+                        ["H", size - pad]
+                    ]).attr(aLine);
+                    paper.path([
+                        ["M", pad + cell * (i + 1), pad],
+                        ["V", size - pad]
+                    ]).attr(aLine);
+                }
+
+                for (var row = 0; row < 3; row++) {
+                    var temp = [];
+                    for (var col = 0; col < 3; col++) {
+                        var mark;
+                        var xc = pad + (col + 0.5) * cell;
+                        var yc = pad + (row + 0.5) * cell;
+                        if (grid[row][col] == "X") {
+                            xPath(paper, xc, yc).attr(aX);
+                        }
+                        else if (grid[row][col] == "O") {
+                            oPath(paper, xc, yc).attr(aO);
+                        }
+                        temp.push(mark);
+                    }
+                    field.push(temp);
+                }
+            };
+
+            this.addMove = function (coor, userMark) {
+                try {
+                    var xc = pad + (coor[1] + 0.5) * cell;
+                    var yc = pad + (coor[0] + 0.5) * cell;
+                    if (userMark == "X") {
+                        xPath(paper, xc, yc).attr(aXb);
+                    }
+                    else {
+                        oPath(paper, xc, yc).attr(aOb);
+                    }
+
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+
+
+        }
 
 
     }
