@@ -9,28 +9,14 @@ Each test is dict with
 
 
 TESTS = {
-    "Basics": [
+    "0. Random X":
         {
-            "input": [3, 2],
-            "answer": 5,
-            "explanation": "3+2=?"
+            "player_mark": "X",
+            "bot": "random"
         },
+    "1. Random O":
         {
-            "input": [5, 7],
-            "answer": 12,
-            "explanation": "5+7=?"
-        }
-    ],
-    "Extra": [
-        {
-            "input": [6, 3],
-            "answer": 9,
-            "explanation": "6+3=?"
+            "player_mark": "O",
+            "bot": "random"
         },
-        {
-            "input": [6, 7],
-            "answer": 13,
-            "explanation": "6+7=?"
-        }
-    ]
 }

@@ -25,23 +25,116 @@ checkio.referee.cover_codes
     cover_codes.unwrap_kwargs -- the same as unwrap_kwargs, but unwrap dict.
 
 """
+from random import choice
 
 from checkio.signals import ON_CONNECT
 from checkio import api
-from checkio.referees.io import CheckiOReferee
+from checkio.referees.multicall import CheckiORefereeMulti
 from checkio.referees import cover_codes
 from checkio.referees import checkers
 
 from tests import TESTS
 
+
+FIRST = "X"
+X = "X"
+O = "O"
+E = "."
+D = "D"
+SIZE = 3
+EMPTY_FIELD = ("...", "...", "...")
+
+cover = """def cover(f, data):
+    return f(tuple(data[0]), data[1])
+"""
+
+
+def random_bot(grid, mark):
+    empties = ((x, y) for x in range(SIZE) for y in range(SIZE) if grid[x][y] == E)
+    return choice(empties)
+
+
+ALGORITHMS = {
+    "random": random_bot
+}
+
+
+def check_game(field):
+    if not any(E in row for row in field):
+        return D
+    lines = (field + ["".join(row) for row in zip(*field)] +
+             [''.join(row) for row in zip(*[(r[i], r[2 - i]) for i, r in enumerate(field)])])
+    return X if (X * SIZE in lines) else O if (O * SIZE in lines) else E
+
+
+def initial(data):
+    player_mark = data["player_mark"]
+    bot_mark = X if player_mark == O else O
+    if data["player_mark"] == FIRST:
+        start_field = ALGORITHMS[data["bot"]](EMPTY_FIELD, bot_mark)
+    else:
+        start_field = EMPTY_FIELD
+    return {
+        "input": [start_field, player_mark],
+        "player_mark": player_mark,
+        "bot_mark": bot_mark
+    }
+
+
+def process(data, user):
+    if (not isinstance(user, (tuple, list)) or len(user) != 2 or
+            not all(isinstance(u, int) and 0 <= u[0] < 3 and 0 <= u[1] < 3 for u in user)):
+        data.update({"result_addon": "The result must be a list/tuple of two integers from 0 to 2.",
+                     "result": False})
+        return data
+    grid = list(data["input"][0])
+    if grid[user[0]][user[1]] != E:
+        data.update({"result_addon": "You tried to mark the filled cell.",
+                     "result": False})
+        return data
+    player_mark = data["player_mark"]
+    bot_mark = data["bot_mark"]
+    grid[user[0]][user[1]] = data["player_mark"]
+    game_result = check_game(grid)
+    if game_result == D or game_result == player_mark:
+        data.update({"result_addon": "Game ended.",
+                     "game_result": game_result,
+                     "result": True})
+        return data
+    bot_move = ALGORITHMS[data["bot"]](grid, bot_mark)
+    grid[bot_move[0]][bot_move[1]] = bot_mark
+    game_result = check_game(grid)
+    if game_result == bot_mark:
+        data.update({"result_addon": "You lost.",
+                     "game_result": game_result,
+                     "result": False})
+        return data
+    elif game_result == D:
+        data.update({"result_addon": "Game ended.",
+                     "game_result": game_result,
+                     "result": True})
+        return data
+    data.update({"result_addon": "Next move.",
+                 "input": [grid, player_mark],
+                 "game_result": game_result,
+                 "result": True})
+    return data
+
+def is_win(data):
+    return data["game_result"] == data["player_mark"] or data["game_result"] == D
+
+
 api.add_listener(
     ON_CONNECT,
-    CheckiOReferee(
+    CheckiORefereeMulti(
         tests=TESTS,
         cover_code={
-            'python-27': cover_codes.unwrap_args,  # or None
-            'python-3': cover_codes.unwrap_args
+            'python-27': cover,
+            'python-3': cover
         },
+        initial_referee=initial,
+        process_referee=process,
+        is_win_referee=is_win,
         # checker=None,  # checkers.float.comparison(2)
         # add_allowed_modules=[],
         # add_close_builtins=[],
