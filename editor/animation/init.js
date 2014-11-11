@@ -73,7 +73,7 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
             $content.find('.call').html(checkioInputStr);
             $content.find('.output').html('Working...');
 
-            var svg = new SVG($content.find(".explanation")[0]);
+            var svg = new SVG($content.find(".explanation")[0], checkioInput[1]);
             svg.draw(checkioInput[0]);
 
             if (data.ext) {
@@ -146,7 +146,7 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
 //            });
 //        });
 
-        function SVG(dom) {
+        function SVG(dom, player) {
             var colorOrange4 = "#F0801A";
             var colorOrange3 = "#FA8F00";
             var colorOrange2 = "#FAA600";
@@ -169,13 +169,16 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
             var cell = 80;
             var size = cell * 3 + 2 * pad;
 
+            var bot = player === "X" ? "O" : "X";
+
             var paper = Raphael(dom, size, size);
 
             var aLine = {"stroke": colorBlue4, "stroke-width": 4, "stroke-linecap": "round"};
-            var aX = {"stroke": colorBlue3, "stroke-width": 4, "stroke-linecap": "round"};
-            var aXb = {"stroke": colorBlue4, "stroke-width": 6, "stroke-linecap": "round"};
-            var aO = {"stroke": colorOrange3, "stroke-width": 4};
-            var aOb = {"stroke": colorOrange4, "stroke-width": 6};
+
+            var aPlayer = {"stroke": colorBlue3, "stroke-width": 4, "stroke-linecap": "round"};
+            var aPlayerB = {"stroke": colorBlue4, "stroke-width": 6, "stroke-linecap": "round"};
+            var aBot = {"stroke": colorOrange3, "stroke-width": 4};
+            var aBotB = {"stroke": colorOrange4, "stroke-width": 6};
 
             var field = [];
 
@@ -207,20 +210,16 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
                 }
 
                 for (var row = 0; row < 3; row++) {
-                    var temp = [];
                     for (var col = 0; col < 3; col++) {
-                        var mark;
                         var xc = pad + (col + 0.5) * cell;
                         var yc = pad + (row + 0.5) * cell;
                         if (grid[row][col] == "X") {
-                            xPath(paper, xc, yc).attr(aX);
+                            xPath(paper, xc, yc).attr(grid[row][col] == player ? aPlayer : aBot);
                         }
                         else if (grid[row][col] == "O") {
-                            oPath(paper, xc, yc).attr(aO);
+                            oPath(paper, xc, yc).attr(grid[row][col] == player ? aPlayer : aBot);
                         }
-                        temp.push(mark);
                     }
-                    field.push(temp);
                 }
             };
 
@@ -229,10 +228,10 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
                     var xc = pad + (coor[1] + 0.5) * cell;
                     var yc = pad + (coor[0] + 0.5) * cell;
                     if (userMark == "X") {
-                        xPath(paper, xc, yc).attr(aXb);
+                        xPath(paper, xc, yc).attr(userMark == player ? aPlayerB : aBotB);
                     }
                     else {
-                        oPath(paper, xc, yc).attr(aOb);
+                        oPath(paper, xc, yc).attr(userMark == player ? aPlayerB : aBotB);
                     }
 
                 }
@@ -256,42 +255,38 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
                     row = grid[i];
                     var res = checkRow(row);
                     if (res) {
-                        console.log("horiz");
                         paper.path([
                             ["M", pad + cell / 8, (i + 0.5) * cell + pad],
                             ["H", size - pad - cell / 8]
-                        ]).attr(res == "X" ? aXb : aOb);
+                        ]).attr(res == player ? aPlayerB : aBotB);
                     }
                 }
                 for (i = 0; i < 3; i++) {
                     row = [grid[0][i], grid[1][i], grid[2][i]];
                     res = checkRow(row);
                     if (res) {
-                        console.log("vert");
                         paper.path([
                             ["M", (i + 0.5) * cell + pad, pad + cell / 8],
                             ["V", size - pad - cell / 8]
-                        ]).attr(res == "X" ? aXb : aOb);
+                        ]).attr(res == player ? aPlayerB : aBotB);
                     }
                 }
                 row = [grid[0][0], grid[1][1], grid[2][2]];
                 res = checkRow(row);
                 if (res) {
-                    console.log("horddddddiz");
                     paper.path([
                         ["M", pad + cell / 8, pad + cell / 8],
                         ["L", size - pad - cell / 8, size - pad - cell / 8]
-                    ]).attr(res == "X" ? aXb : aOb);
+                    ]).attr(res == player ? aPlayerB : aBotB);
                 }
 
                 row = [grid[0][2], grid[1][1], grid[2][0]];
                 res = checkRow(row);
                 if (res) {
-                    console.log("dddd");
                     paper.path([
                         ["M", pad + cell / 8, size - pad - cell / 8],
                         ["L", size - pad - cell / 8, pad + cell / 8]
-                    ]).attr(res == "X" ? aXb : aOb);
+                    ]).attr(res == player ? aPlayerB : aBotB);
                 }
 
 
