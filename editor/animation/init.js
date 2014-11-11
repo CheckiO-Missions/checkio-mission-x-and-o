@@ -113,6 +113,9 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
                 else {
                     $content.find('.answer').remove();
                 }
+                if (game_result === "X" || game_result === "O") {
+                    svg.checkLines(data.ext["grid"]);
+                }
             }
 
 
@@ -236,6 +239,62 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210', 'snap.svg_030'],
                 catch (e) {
                     console.log(e);
                 }
+            };
+
+            this.checkLines = function (grid) {
+                function checkRow(ar) {
+                    for (var k = 0; k < ar.length; k++) {
+                        if (ar[k] !== ar[0]) {
+                            return false;
+                        }
+                    }
+                    return ar[0] !== "." ? ar[0] : false;
+                }
+
+                var row;
+                for (var i = 0; i < 3; i++) {
+                    row = grid[i];
+                    var res = checkRow(row);
+                    if (res) {
+                        console.log("horiz");
+                        paper.path([
+                            ["M", pad + cell / 8, (i + 0.5) * cell + pad],
+                            ["H", size - pad - cell / 8]
+                        ]).attr(res == "X" ? aXb : aOb);
+                    }
+                }
+                for (i = 0; i < 3; i++) {
+                    row = [grid[0][i], grid[1][i], grid[2][i]];
+                    res = checkRow(row);
+                    if (res) {
+                        console.log("vert");
+                        paper.path([
+                            ["M", (i + 0.5) * cell + pad, pad + cell / 8],
+                            ["V", size - pad - cell / 8]
+                        ]).attr(res == "X" ? aXb : aOb);
+                    }
+                }
+                row = [grid[0][0], grid[1][1], grid[2][2]];
+                res = checkRow(row);
+                if (res) {
+                    console.log("horddddddiz");
+                    paper.path([
+                        ["M", pad + cell / 8, pad + cell / 8],
+                        ["L", size - pad - cell / 8, size - pad - cell / 8]
+                    ]).attr(res == "X" ? aXb : aOb);
+                }
+
+                row = [grid[0][2], grid[1][1], grid[2][0]];
+                res = checkRow(row);
+                if (res) {
+                    console.log("dddd");
+                    paper.path([
+                        ["M", pad + cell / 8, size - pad - cell / 8],
+                        ["L", size - pad - cell / 8, pad + cell / 8]
+                    ]).attr(res == "X" ? aXb : aOb);
+                }
+
+
             }
 
 

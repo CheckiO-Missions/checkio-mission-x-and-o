@@ -108,7 +108,8 @@ def process(data, user):
         data.update({"result_addon": "Game ended.",
                      "game_result": game_result,
                      "result": True,
-                     "bot_move": None})
+                     "bot_move": None,
+                     "grid": grid})
         return data
     bot_move = ALGORITHMS[data["bot"]](grid, bot_mark)
     grid[bot_move[0]][bot_move[1]] = bot_mark
@@ -117,19 +118,22 @@ def process(data, user):
         data.update({"result_addon": "Lost :-(",
                      "game_result": game_result,
                      "result": False,
-                     "bot_move": bot_move})
+                     "bot_move": bot_move,
+                     "grid": grid})
         return data
     elif game_result == D:
         data.update({"result_addon": "Game ended.",
                      "game_result": game_result,
                      "result": True,
-                     "bot_move": bot_move})
+                     "bot_move": bot_move,
+                     "grid": grid})
         return data
     data.update({"result_addon": "Next move.",
                  "input": [["".join(row) for row in grid], player_mark],
                  "game_result": game_result,
                  "result": True,
-                 "bot_move": bot_move})
+                 "bot_move": bot_move,
+                 "grid": grid})
     return data
 
 
