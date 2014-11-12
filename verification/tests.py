@@ -38,15 +38,15 @@ TESTS = {
             "player_mark": "O",
             "bot": "greedy"
         },
-    "6. Greedy X":
+    "6. Against X":
         {
             "player_mark": "X",
-            "bot": "greedy"
+            "bot": "against"
         },
-    "7. Greedy O":
+    "7. Against O":
         {
             "player_mark": "O",
-            "bot": "greedy"
+            "bot": "against"
         },
 
 }

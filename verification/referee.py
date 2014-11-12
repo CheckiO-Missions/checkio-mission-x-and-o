@@ -53,34 +53,43 @@ def random_bot(grid, mark):
     empties = [(x, y) for x in range(SIZE) for y in range(SIZE) if grid[x][y] == E]
     return choice(empties) if empties else (None, None)
 
-FILL_WEIGHT = 2
-EMPTY_WEIGHT = 1
 
-def greedy_bot(grid, mark):
-    tr_grid = list(zip(*grid))
-    empties = [(x, y) for x in range(SIZE) for y in range(SIZE) if grid[x][y] == E]
-    if not empties:
-        return None, None
-    best_cell, best_weight = empties[0], 0
-    for x, y in empties:
-        rows = [grid[x], tr_grid[y]]
-        if x == y:
-            rows.append([grid[i][i] for i in range(SIZE)])
-        if x == SIZE - y - 1:
-            rows.append([grid[i][SIZE - i - 1] for i in range(SIZE)])
-        weight = 0
-        for work_row in rows:
-            weight += sum(FILL_WEIGHT if el == mark else (EMPTY_WEIGHT if el == E else 0)
-                          for el in work_row)
-        if weight > best_weight:
-            best_cell, best_weight = (x, y), weight
-        elif weight == best_weight:
-            best_cell, best_weight = choice([(x, y), best_cell]), weight
-    return best_cell
+def weight_bot(weight_dict):
+    def f(grid, mark):
+        nonlocal weight_dict
+        enemy_mark = X if mark == O else O
+        work_weights = {
+            E: weight_dict["empty"],
+            X: weight_dict["own"] if mark == X else weight_dict["enemy"],
+            O: weight_dict["own"] if mark == X else weight_dict["enemy"],
+        }
+        tr_grid = list(zip(*grid))
+        empties = [(x, y) for x in range(SIZE) for y in range(SIZE) if grid[x][y] == E]
+        if not empties:
+            return None, None
+        best_cell, best_weight = empties[0], 0
+        for x, y in empties:
+            rows = [grid[x], tr_grid[y]]
+            if x == y:
+                rows.append([grid[i][i] for i in range(SIZE)])
+            if x == SIZE - y - 1:
+                rows.append([grid[i][SIZE - i - 1] for i in range(SIZE)])
+            weight = 0
+            for work_row in rows:
+                if X in work_row and O in work_row:
+                    continue
+                weight += sum(work_weights[el] for el in work_row)
+            if weight > best_weight:
+                best_cell, best_weight = (x, y), weight
+            elif weight == best_weight:
+                best_cell, best_weight = choice([(x, y), best_cell]), weight
+        return best_cell
+    return f
 
 ALGORITHMS = {
     "random": random_bot,
-    "greedy": greedy_bot
+    "greedy": weight_bot({"empty": 1, "own": 2, "enemy": 1}),
+    "against": weight_bot({"empty": 1, "own": 1, "enemy": 2})
 }
 
 
