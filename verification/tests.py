@@ -7,7 +7,6 @@ Each test is dict with
     "explanation" -- not necessary key, it's using for additional info in animation.
 """
 
-
 TESTS = {
     "0. Random X":
         {
@@ -19,4 +18,35 @@ TESTS = {
             "player_mark": "O",
             "bot": "random"
         },
+    "2. Random X":
+        {
+            "player_mark": "X",
+            "bot": "random"
+        },
+    "3. Random O":
+        {
+            "player_mark": "O",
+            "bot": "random"
+        },
+    "4. Greedy X":
+        {
+            "player_mark": "X",
+            "bot": "greedy"
+        },
+    "5. Greedy O":
+        {
+            "player_mark": "O",
+            "bot": "greedy"
+        },
+    "6. Greedy X":
+        {
+            "player_mark": "X",
+            "bot": "greedy"
+        },
+    "7. Greedy O":
+        {
+            "player_mark": "O",
+            "bot": "greedy"
+        },
+
 }
