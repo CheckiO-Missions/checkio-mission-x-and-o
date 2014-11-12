@@ -45,7 +45,7 @@ SIZE = 3
 EMPTY_FIELD = ("...", "...", "...")
 
 cover = """def cover(f, data):
-    return f(tuple(data[0]), data[1])
+    return f(tuple(str(row) for row in data[0]), data[1])
 """
 
 
