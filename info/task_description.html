@@ -1,24 +1,25 @@
 <p>
-    Tic-Tac-Toe, sometimes also known as Xs and Os, is a game for two players
-    (X and O) who take turns marking the spaces in a 3×3 grid.
-    The player who succeeds in placing three respective marks in a horizontal, vertical, or diagonal
-    rows (NW-SE and
-    NE-SW) wins the game. Maybe you've solve <a
+    Tic-Tac-Toe, sometimes also known as Xs and Os, is a game for two players (X and O) who take
+    turns marking spaces in a 3×3 grid. The player who succeeds in placing three of their respective
+    marks in a horizontal, vertical, or diagonal row (NW-SE and NE-SW) wins the game. Maybe you've
+    solve <a
         href="http://www.checkio.org/mission/x-o-referee/share/46411288d0dd63d1c24b3d004cb7e6ea/">
     "Xs and Os Referee"</a> already and this mission will be simpler for you.
 
 </p>
 
 <p>
-    Here you will play versus various bots and your mission is don't lose. Only wins or draws.
-    For each game your function is called several times (in the same environment)
-    for each move until game over.
+    In this mission, you will play against various bots, your goal is to never lose. You may only
+    achieve wins or draws. For each game your function is called several times (in the same
+    environment) for each move until the game is over.
+
 </p>
 <p>
-    For each step your function receive a grid state as a sequence of strings, where
-    "X" is X-mark, "O" is O-mark and "." is an empty cell. The second argument is a your mark - "X"
-    or "O". For each move your fuтction should return coordinates of the your next mark as
-    a sequence of two numbers - row and column. Rows and columns arecounted from zero.
+    For each step your function receives a grid state as a sequence of strings, where "X" is a
+    X-mark, "O" is an O-mark and "." is an empty cell. The second argument is for your mark, either
+    "X" or "O". For each move your fuтction should return the coordinates of the your next mark as a
+    sequence of two numbers - row and column. Rows and columns are numbered starting from zero.
+
 </p>
 
 <!--<p style="text-align: center;">-->
@@ -43,16 +44,19 @@
     <p>
         <strong>Example:</strong>
     </p>
-<textarea data-code="python">x_and_o((
-    "X.O",
-    "XX.",
-    "XOO"), "O") # (1, 2) and you will win</textarea>
+    <textarea data-code="python">x_and_o((
+        "X.O",
+        "XX.",
+        "XOO"), "O") # (1, 2) and you will win</textarea>
 </div>
 <br>
 <p class="for_info_only">
     <strong>How it is used: </strong>
-    In this mission you will build a bot for classical game.
-    Next you will build more complex AI for games and so on.
+    Tic Tac Toe has long been known as a solved game. For this mission, you’re tasked with building
+    a robot to prove this point by winning or tying every game. The concepts represented here will
+    allow you to write a basic game AI which can be improved to play all sorts of classic games.
+
+
 </p>
 
 
