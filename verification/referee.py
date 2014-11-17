@@ -61,7 +61,7 @@ def weight_bot(weight_dict):
         work_weights = {
             E: weight_dict["empty"],
             X: weight_dict["own"] if mark == X else weight_dict["enemy"],
-            O: weight_dict["own"] if mark == X else weight_dict["enemy"],
+            O: weight_dict["own"] if mark == O else weight_dict["enemy"],
         }
         tr_grid = list(zip(*grid))
         empties = [(x, y) for x in range(SIZE) for y in range(SIZE) if grid[x][y] == E]
