@@ -2,7 +2,7 @@
     Tic-Tac-Toe, sometimes also known as Xs and Os, is a game for two players (X and O) who take
     turns marking spaces in a 3×3 grid. The player who succeeds in placing three of their respective
     marks in a horizontal, vertical, or diagonal row (NW-SE and NE-SW) wins the game. Maybe you've
-    solve <a href="http://www.checkio.org/mission/x-o-referee/share/46411288d0dd63d1c24b3d004cb7e6ea/">
+    solve <a target="_blank" href="http://www.checkio.org/mission/x-o-referee/share/46411288d0dd63d1c24b3d004cb7e6ea/">
     "Xs and Os Referee"</a> already and this mission will be simpler for you.
 
 </p>
@@ -14,10 +14,7 @@
 
 </p>
 <p>
-    For each step your function receives a grid state as a sequence of strings, where "X" is a
-    X-mark, "O" is an O-mark and "." is an empty cell. The second argument is for your mark, either
-    "X" or "O". For each move your function should return the coordinates of the your next mark as a
-    sequence of two numbers - row and column. Rows and columns are numbered starting from zero.
+    For each step your function receives a grid state as a sequence of strings, where <b>"X"</b>  is a X-mark, <b>"O"</b> is an O-mark and <b>"."</b> is an empty cell. The second argument is for your mark, either <b>"X"</b> or <b>"O"</b>. For each move your function should return the coordinates of the your next mark as a sequence of two numbers - row and column. Rows and columns are numbered starting from zero.
 
 </p>
 
@@ -29,19 +26,19 @@
 <!--</p>-->
 
 <p>
-    <strong>Input: </strong> Two arguments. A grid state as a tuple of strings (unicode) and
+    <strong>Input:</strong> Two arguments. A grid state as a tuple of strings (unicode) and
     your mark as a string "X" or "O".
 </p>
 
 <p>
-    <strong>Output: </strong> The coordinates of your move as a list or a tuple of two integers from
+    <strong>Output:</strong> The coordinates of your move as a list or a tuple of two integers from
     0 to 2.
 </p>
 
 
 <div class="for_info_only">
     <p>
-        <strong>Example:</strong>
+        <strong>Examples:</strong>
     </p>
     <textarea data-code="python">x_and_o((
         "XXO",
@@ -50,16 +47,15 @@
 </div>
 <br>
 <p class="for_info_only">
-    <strong>How it is used: </strong>
-    Tic Tac Toe has long been known as a solved game. For this mission, you’re tasked with building
-    a robot to prove this point by winning or tying every game. The concepts represented here will
-    allow you to write a basic game AI which can be improved to play all sorts of classic games.
-
-
+    <strong>How it is used:</strong>
+    <i>
+        Tic Tac Toe has long been known as a solved game. For this mission, you’re tasked with building a robot to prove this point by winning or tying every game. The concepts represented here will allow you to write a basic game AI which can be improved to play all sorts of classic games.
+    </i>
 </p>
 
-
-<p><strong>Precondition:</strong><br>
-    len(grid) == 3<br>
-    all(all(ch in "XO." for ch in row) and len(row) == 3 for row in grid)
+<p><strong>Preconditions:</strong>
+    <ul>
+        <li><i>len(grid) == 3</i></li>
+        <li><i>all(all(ch in "XO." for ch in row) and len(row) == 3 for row in grid)</i></li>
+    </ul>
 </p>
