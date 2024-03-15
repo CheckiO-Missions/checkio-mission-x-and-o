@@ -1,0 +1,65 @@
+<p>
+    Tic-Tac-Toe, manchmal auch als Xs und Os bekannt, ist ein Spiel für zwei Spieler (X und O), die abwechselnd
+    abwechselnd Felder in einem 3×3-Gitter markieren. Der Spieler, dem es gelingt, drei seiner jeweiligen
+    markierungen in einer horizontalen, vertikalen oder diagonalen Reihe (NW-SE und NE-SW) zu platzieren, gewinnt das Spiel. Vielleicht haben Sie
+    <a href="http://www.checkio.org/mission/x-o-referee/share/46411288d0dd63d1c24b3d004cb7e6ea/">
+    "Xs and Os Referee"</a> bereits gelöst und diese Mission wird einfacher für Sie sein.
+
+</p>
+
+<p>
+    In dieser Mission spielen Sie gegen verschiedene Bots. Ihr Ziel ist es, niemals zu verlieren. Sie dürfen nur
+    siege oder Unentschieden erzielen. Bei jedem Spiel wird Ihre Funktion mehrmals aufgerufen (in derselben
+    umgebung) für jeden Zug aufgerufen, bis das Spiel zu Ende ist.
+
+</p>
+<p>
+    Für jeden Schritt erhält Ihre Funktion einen Gitterstatus als eine Folge von Strings, wobei "X" eine
+    X-Markierung, "O" eine O-Markierung und "." eine leere Zelle ist. Das zweite Argument ist für Ihre Markierung, entweder
+    "X" oder "O". Für jede Bewegung sollte Ihre Funktion die Koordinaten der nächsten Markierung als eine
+    folge von zwei Zahlen - Zeile und Spalte - zurückgeben. Die Zeilen und Spalten werden bei Null beginnend nummeriert.
+
+</p>
+
+<!--<p style="text-align: center;">-->
+<!--<img class="for_info_only" title="x-o-referee" src="{{MEDIA}}x-o-referee.png" alt="x-o-referee"-->
+<!--width="600px"/>-->
+<!--<img class="for_editor_only" title="x-o-referee" src="{{MEDIA}}x-o-referee.png"-->
+<!--alt="x-o-referee" width="380px"/>-->
+<!--</p>-->
+
+<p>
+   <strong>Eingabe: </strong> Zwei Argumente. Ein Gitterzustand als Tupel von Strings (Unicode) und
+    ihre Markierung als Zeichenkette "X" oder "O".
+</p>
+
+<p>
+   <strong>Ausgabe: </strong> Die Koordinaten Ihres Zuges als Liste oder als Tupel aus zwei Ganzzahlen von
+    0 bis 2.
+</p>
+
+
+<div class="for_info_only">
+    <p>
+        <strong>Beispiel:</strong>
+    </p>
+    <textarea data-code="python">x_und_o((
+        "XXO",
+        ".X.",
+        "XOO"), "O") # (1, 2) und Sie werden gewinnen</textarea>
+</div>
+<br>
+<p class="for_info_only">
+   <strong>Wie es verwendet wird: </strong>
+    Tic Tac Toe ist seit langem als Lösungsspiel bekannt. In dieser Mission haben Sie die Aufgabe, einen Roboter zu bauen
+    einen Roboter zu bauen, der dies beweist, indem er jedes Spiel gewinnt oder unentschieden spielt. Die hier vorgestellten Konzepte werden
+    ermöglichen es Ihnen, eine grundlegende Spiel-KI zu schreiben, die verbessert werden kann, um alle Arten von klassischen Spielen zu spielen.
+
+
+</p>
+
+
+<p><strong>Vorbedingung:</strong><br>
+    len(grid) == 3<br>
+    all(all(ch in "XO." für ch in Zeile) und len(Zeile) == 3 für Zeile in Gitter)
+</p>
